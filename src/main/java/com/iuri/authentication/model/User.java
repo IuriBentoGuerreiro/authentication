@@ -23,11 +23,9 @@ public class User implements UserDetails {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "name")
-    private String name;
-    @Column(name = "email")
-    private String email;
-    @Column(name = "password")
+    @Column(name = "username", unique = true, nullable = false)
+    private String username;
+    @Column(name = "password", nullable = false)
     private String password;
 
     @ManyToMany
@@ -36,6 +34,12 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
+    public User(String username, String password, Set<Role> roles) {
+        this.username = username;
+        this.password = password;
+        this.roles = roles;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles;
@@ -43,7 +47,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return name;
+        return username;
     }
 
     @Override

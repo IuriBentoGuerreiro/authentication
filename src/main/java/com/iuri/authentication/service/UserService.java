@@ -7,8 +7,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
-import java.util.HashSet;
-
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -17,26 +15,19 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
 
-    public User saveUser(User user){
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+    public User save(User user){
         return userRepository.save(user);
     }
 
-    public User findByname(String name){
-        return userRepository.findByName(name).orElseThrow(
+    public User findByUsername(User user){
+        return userRepository.findByUsername(user.getUsername()).orElseThrow(
                 ()-> new NotFoundException("Not found")
         );
     }
 
-    public User assignRoleToUser(String name, String roleName){
-        var role = roleService.findByname(roleName);
-        var user = findByname(name);
-
-        if (user.getRoles() == null){
-            user.setRoles(new HashSet<>());
-        }
-
-        user.getRoles().add(role);
-        return userRepository.save(user);
+    public User findById(Integer id){
+        return userRepository.findById(id).orElseThrow(
+                ()-> new NotFoundException("Not found")
+        );
     }
 }
